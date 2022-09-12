@@ -141,7 +141,7 @@ def get_data():
         },
         'multioffer': False,
     }
-    #получил данные о планшетах
+    # получил данные о планшетах
     response = requests.post('https://www.mvideo.ru/bff/product-details/list', cookies=cookies, headers=headers,
                              json=json_data).json()
 
@@ -179,20 +179,34 @@ def get_data():
 
 
 def get_result():
-    with open('2_items.json', 'r') as file:
+    with open('2_items.json') as file:
         products_data = json.load(file)
-    with open('4_items_prices.json.json', 'r') as file:
+    with open('4_items_prices.json') as file:
         products_prices = json.load(file)
     products_data = products_data.get('body').get('products')
-    for item in products_prices:
+    for item in products_data:
         product_id = item.get('productId')
         if product_id in products_prices:
             prices = products_prices[product_id]
-        item['item_basePrice'] = prices.get('item_basePrice')
-        item['item_salePrice'] = prices.get('item_salePrice')
-        item['item_bonus'] = prices.get('item_bonus')
-    with open('5_result', 'w'):
+            item['item_basePrice'] = prices.get('item_basePrice')
+            item['item_salePrice'] = prices.get('item_salePrice')
+            item['item_bonus'] = prices.get('item_bonus')
+
+    with open('5_results.json', 'w') as file:
         json.dump(products_data, file, indent=4, ensure_ascii=False)
+
+    # with open('4_items_prices.json', 'r') as file:
+    #     products_prices = json.load(file)
+    # products_data = products_data.get('body').get('products')
+    # for item in products_prices:
+    #     product_id = item.get('productId')
+    #     if product_id in products_prices:
+    #         prices = products_prices[product_id]
+    #     item['item_basePrice'] = prices.get('item_basePrice')
+    #     item['item_salePrice'] = prices.get('item_salePrice')
+    #     item['item_bonus'] = prices.get('item_bonus')
+    # with open('5_result', 'w'):
+    #     json.dump(products_data, file, indent=4, ensure_ascii=False)
 
 
 def main():
