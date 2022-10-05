@@ -8,7 +8,7 @@ from time import sleep
 
 def get_data():
     params = {
-        'categoryId': '118',
+        'categoryId': '205',
         'offset': '0',
         'limit': '24',
         'filterParams': 'WyJ0b2xrby12LW5hbGljaGlpIiwiIiwiZGEiXQ==',
@@ -32,7 +32,7 @@ def get_data():
         #sleep(3)
         offset = f'{i * 24}'
         params = {
-            'categoryId': '118',
+            'categoryId': '205',
             'offset': offset,
             'limit': '24',
             'doTranslit': 'true',
@@ -58,7 +58,7 @@ def get_data():
             'multioffer': False,
         }
         response = s.post('https://www.mvideo.ru/bff/product-details/list', cookies=cookies, headers=headers,json=json_data).json()
-        print(response['body'])
+        #print(response['body'])
         products_description[i] = response
         with open(f'data/2_req/{i+1}_prod_desc.json', 'w', encoding='utf-8') as file:
             json.dump(products_description[i], file, indent=4, ensure_ascii=False)
