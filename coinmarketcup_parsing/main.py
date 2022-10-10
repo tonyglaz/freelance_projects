@@ -1,30 +1,35 @@
 import requests
 from config import headers
 from bs4 import BeautifulSoup
+from multiprocessing import Pool
 import xlsxwriter
 import csv
 import json
 import time
 
 
-def get_url():
+def get_urls():
     url = "https://coinmarketcap.com/all/views/all/"
     response = requests.get(url, headers=headers)
     soup = BeautifulSoup(response.text, "lxml")
     data = soup.find_all("tr", class_="cmc-table-row")
     # print(data)
+    urls = []
 
     for i in data:
+        print(i)
         res = i.find_all('div',
                          class_='sc-1ibw5f9-0 bpOMHJ cmc-table__column-name cmc-table__column-name--narrow-layout')
         cryptocurrenc_url = f"https://coinmarketcap.com{i.find('a').get('href')}"
-        # print(cryptocurrenc_url)
-        yield cryptocurrenc_url
+        print(cryptocurrenc_url)
+        urls.append(cryptocurrenc_url)
+    return urls
 
 
-def run_func():
-    for index, currency_url in enumerate(get_url()):
+def run_func(urls):
+    for index, currency_url in enumerate(urls):
         # print(index)
+        print(currency_url)
         response = requests.get(currency_url, headers=headers)
         soup = BeautifulSoup(response.text, 'lxml')
         try:
@@ -82,29 +87,33 @@ def write_to_csv():
                 'Общая капитализация',
             )
         )
-        writer.writerows(
-            data
-        )
+        writer.writerows(data)
         # print("--- %s seconds ---" % (time.time() - start_time))
 
 
-def write_to_json():
+def write_to_json(urls):
     data = {}
-    for index, value in enumerate(run_func()):
+    for index, value in enumerate(run_func(urls)):
         data[index] = {
             'Название': value[0],
             'Цена': value[1],
             'Изменение': value[2],
             'Общая капитализация': value[3],
         }
-    with open('data.json', 'w',encoding='cp1251') as file:
+    with open('data.json', 'w', encoding='cp1251') as file:
         json.dump(data, file, indent=4, ensure_ascii=False)
 
 
 def main():
+    start_time = time.time()
+    all_links = get_urls()
+    #print(all_links)
     # write_to_excel(run_func)
     # write_to_csv()
-    write_to_json()
+    # with Pool(10) as p:
+    #    p.map(write_to_json, all_links)
+    write_to_json(all_links)
+    print("--- %s seconds ---" % (time.time() - start_time))
 
 
 if __name__ == '__main__':
