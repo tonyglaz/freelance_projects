@@ -8,6 +8,7 @@ import json
 import time
 
 
+
 def get_urls():
     url = "https://coinmarketcap.com"
     response = requests.get(url, headers=headers)
