@@ -8,7 +8,8 @@ from multiprocessing import Pool
 
 options = webdriver.ChromeOptions()
 useragent = UserAgent()
-options.add_argument(f'user-agent={useragent.opera}')  # ie,opera
+options.add_argument(f'user-agent={useragent.chrome}')  # ie,chrome
+
 #options.add_experimental_option('excludeSwitches', ['enable-logging'])
 options.add_argument('--disable-blink-features=AutomationControlled')
 
